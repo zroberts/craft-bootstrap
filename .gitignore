@@ -1,3 +1,11 @@
 # Craft Storage (cache) [http://buildwithcraft.com/help/craft-storage-gitignore]
-/craft/storage/*
-!/craft/storage/logo/*
+storage/*
+!storage/logo/*
+.env
+.env.example
+composer.json
+composer.lock
+craft
+craft.bat
+web/cpresources/*
+vendor/*
