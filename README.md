@@ -23,5 +23,3 @@ A basic Craft 3 Instalation. Includes Gulp for some basic task running.
 gulp watch
 ```
 Watches for changes in files. If the files need compiled, it ruuns the compilers. Then triggers an automatic browser-reload on the server for viewing the changes.
-
-git
