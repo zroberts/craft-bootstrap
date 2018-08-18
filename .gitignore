@@ -9,3 +9,4 @@ craft
 craft.bat
 web/cpresources
 vendor/*
+node_modules
