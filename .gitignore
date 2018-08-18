@@ -10,3 +10,4 @@ craft.bat
 web/cpresources
 vendor/*
 node_modules
+web/dist
