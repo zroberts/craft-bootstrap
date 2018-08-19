@@ -1,6 +1,26 @@
 # craft-bootstrap
 A basic Craft 3 Instalation. Includes Gulp for some basic task running. 
 
+## Duplicating this Repo (as the owner)
+
+1. Create a new Repo (blank/empty repo)
+2. Clone the blank repo to local storage.
+```
+git clone REPO-URL
+```
+3. Add Upstream remote to this REPO
+```
+git remote add upstream https://github.com/zroberts/craft-bootstrap.git
+```
+4. Pull the repo down
+```
+git pulll upstream master
+```
+5. Push your nice, new repo back up to 
+```
+git push
+```
+
 ## Pushing to the Digital Ocean Server
 
 ```
