@@ -20,6 +20,10 @@ git pulll upstream master
 ```
 git push
 ```
+6. Remove the rmeote repo from your new site
+```
+git remote rm upstream
+```
 
 ## Pushing to the Digital Ocean Server
 
@@ -51,6 +55,11 @@ git push REPO_NAME BRANCH_NAME
 
 ### Development:
 ```
-gulp watch
+gulp
 ```
-Watches for changes in files. If the files need compiled, it ruuns the compilers. Then triggers an automatic browser-reload on the server for viewing the changes.
+Watches the SASS, uses browser sync and keeps the site auto-reloading.
+
+```
+gulp build
+```
+Cleans dist folder, and compiles the scripts and fonts.
