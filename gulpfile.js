@@ -1,11 +1,13 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var browserSync = require('browser-sync').create();
-var useref = require('gulp-useref');
-var concat = require('gulp-concat');
-var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
-var cssnano = require('gulp-cssnano');
+var gulp = require('gulp'),
+	sass = require('gulp-sass'),
+	browserSync = require('browser-sync').create(),
+	useref = require('gulp-useref'),
+	concat = require('gulp-concat'),
+	rename = require('gulp-rename'),
+	uglify = require('gulp-uglify'),
+	cssnano = require('gulp-cssnano'),
+	del = require('del'),
+	runSequence = require('run-sequence');
 
 var supported = [
 	'last 2 versions',
@@ -15,10 +17,13 @@ var supported = [
 	'ios 6',
 	'android 4'
 ];
-var sassSource = 'web/source/scss/**/*.scss',
+var twigTemp = 'templates/**/*.twig'
+	sassSource = 'web/source/scss/**/*.scss',
 	sassDest = 'web/dist/css',
 	jsSource = 'web/srouce/js/**/*.js',
-	jsDest = 'web/dist/js';
+	jsDest = 'web/dist/js',
+	fontSrc = 'web/source/fonts/**/*',
+	fontDest = 'web/dist/fonts';
 
 
 gulp.task('browserSync', function(){
@@ -28,26 +33,41 @@ gulp.task('browserSync', function(){
 		},
 	})
 });
-
 gulp.task('sass', function(){
 	return gulp.src(sassSource)
-			.pipe(sass())
-			.pipe(cssnano({
-				autoprefixer: {browsers: supported, add: true}
-			}))
-			.pipe(gulp.dest(sassDest))
+		.pipe(sass())
+		.pipe(cssnano({
+			autoprefixer: {browsers: supported, add: true}
+		}))
+		.pipe(gulp.dest(sassDest))
 });
-
 gulp.task('scripts', function(){
 	return gulp.src(jsSource)
-			.pipe(concat('scirpts.js'))
-			.pipe(gulp.dest(jsDest))
-			.pipe(rename('scripts.min.js'))
-			.pipe(uglify())
-			.pipe(gulp.dest(jsDest));
+		.pipe(concat('scirpts.js'))
+		.pipe(gulp.dest(jsDest))
+		.pipe(rename('scripts.min.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest(jsDest));
 });
+gulp.task('fonts', function(){
+	return gulp.src(fontSrc)
+		.pipe(gulp.dest(fontDest))
+})
+gulp.task('clean:dist', function(){
+	return del.sync('dist');
+})
+
+gulp.task('build', function(callback){
+	runSequence('clean:dist', 
+		['sass', 'scripts', 'fonts'], 
+		callback
+	)
+})
 gulp.task('watch', ['browserSync', 'sass'] function(){
-	gulp.watch('web/source/scss/**/*.scss', ['sass']);
+	gulp.watch(sassSource, ['sass']);
 	gulp.watch('templates/**/*.twig', browserSync.reload);
-	gulp.watch('web/**/*.js', browserSync.reload);	
+	gulp.watch(jsSource, browserSync.reload);	
+});
+gulp.task('default', function(callback){
+	runSequence(['sass', 'browserSync', 'watch'], callback)
 });
