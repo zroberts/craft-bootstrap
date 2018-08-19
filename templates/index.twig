@@ -1,0 +1,23 @@
+{% extends "_layouts/base" %}
+{% block head %}
+	<link href="library/zozo-accordion/css/zozo.accordion.min.css" rel="stylesheet">
+	<script src="library/zozo-accordion/js/zozo.accordion.min.js"></script>
+{% endblock %}
+{% block mainTag %}<body class="{{entry.colorScheme.value}} home">{% endblock %}
+{% block body %}
+	<div class="slideshow-container" style="background-image: url('{{entry.sliderImage.first().url()}}');">
+		<div class="wrap">
+			{% include "_parts/homepage-slider" %}
+		</div>
+	</div>
+	<div class="blueprints">
+		<div class="wrap">
+			<div class="homecopy">
+				{{entry.body}}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block footer %}
+	<script src="/js/slideshow.js"></script>
+{% endblock %}

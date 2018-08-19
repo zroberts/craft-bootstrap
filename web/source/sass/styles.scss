@@ -1,0 +1,26 @@
+@import '_normalize';
+@import '_fonts';
+@import '_mixins';
+@import '_variables';
+
+// sSome additional default styles
+body, html{
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.group:after, .copy>.qfact:after {
+  visibility: hidden;
+  display: block;
+  content: "";
+  clear: both;
+  height: 0 !important;
+}
+* html .group             { zoom: 1; } /* IE6 */
+*:first-child+html .group { zoom: 1; } /* IE7 */
+/* group == clear floats */
+.wrap{
+  max-width: 1200px;
+  width: 95%;
+  margin: 0 auto;
+}

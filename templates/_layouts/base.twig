@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+	{% spaceless %}
+	<head>
+		<meta charset="utf-8" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+    	<title>{{entry.title}} | {{siteName}}</title>
+	
+		{% block head %}{% endblock %}
+		
+		<link rel="stylesheet/css" href="/dist/css/style.css" />
+	</head>
+	<body>
+		{# Call in the shared header title #}
+		{% include "_shared/header" %}
+		
+		{# main body block #}
+		{% block body %}{% endblock %}
+		
+		{# Call in the shared footer file #}
+		{% include "_shared/footer" %}
+		
+		{# Any custom JS that may need to be called into a footer on pages #}
+		{% block footer %}{% endblock %}
+	</body>
+	{% endspaceless %}
+</html>
