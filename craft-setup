@@ -119,7 +119,7 @@ function craftSetup(){
 	// Install Node Packages
 	installNodePackages();
 	// Say adios amigo's
-	outputString(PHP_EOL.'Setup is complete. Adios Amigo!', Console:FG_YELLOW);
+	outputString(PHP_EOL.'Setup is complete. Adios Amigo!', Console::FG_YELLOW);
 }
 function setupCraftScripts(){
 	outputString(PHP_EOL.'Setting Up Craft-Scripts', Console::FG_YELLOW);
