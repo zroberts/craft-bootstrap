@@ -1,8 +1,12 @@
 {
-  "name": "taskrunner",
+  "name": "Stonewall Group Craft Scafolding",
   "version": "1.0.0",
-  "description": "A simple taskrunner for a Craft CMS install",
-  "main": "index.js",
+  "description": "Simple Scafolding for Craft CMS",
+  "main": "gulpfile.js",
+  "author": "Zachary Roberts, Stonewall Group <zroberts@stonewallgroup.com>",
+  "copyright": "Stonewall Group",
+  "license": "UNLICENSED",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

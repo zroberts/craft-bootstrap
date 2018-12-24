@@ -1,0 +1,55 @@
+{
+  "name": "zroberts/craft",
+  "description": "Craft CMS Scaffolding Project",
+  "version": "1.0.0",
+  "keywords":[
+    "craft",
+    "cms",
+    "craftcms",
+    "project"
+  ],
+  "license": "MIT",
+  "homepage": "https://craftcms.com/",
+  "type":"project",
+  "support":{
+    "email": "zroberts@stonewallgroup.com",
+    "issues": "https://github.com/zroberts/craft-bootstrap/issues",
+    "source": "https://github.com/zroberts/craft-bootstrap",
+    "docs": "https://github.com/zroberts/craft-bootstrap/issues"
+  },
+  "minimum-stability": "RC",
+  "require": {
+    "craftcms/cms": "^3.0.0",
+    "vlucas/phpdotenv": "^2.4.0",
+    "aelvan/imager": "^2.1",
+    "nystudio107/craft-seomatic": "^3.1",
+    "solspace/craft3-freeform": "^2.5",
+    "solspace/craft3-freeform-pro": "^2.5",
+    "spicyweb/craft-neo": "^2.1",
+    "verbb/navigation": "^1.0",
+    "craftcms/redactor": "^2.1",
+    "topshelfcraft/wordsmith": "^3.0",
+    "bymayo/pdf-transform": "^1.0",
+    "nystudio107/craft-scripts": "^1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "modules\\": "modules/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "7.0"
+    }
+  },
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ],
+    "post-create-project-cmd": [
+      "@php craft setup/welcome"
+      "@php craft-setup welcome"
+    ],
+  }
+}

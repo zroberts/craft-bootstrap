@@ -1,0 +1,273 @@
+#!/usr/bin/env php
+<?php 
+
+use yii\helpers\Console;
+use mikeheartl\shellcommand\Command as ShellCommand;
+
+const INSTALL_PLUGINS = [
+	"imager",
+	"craft-seomatic",
+	"craft3-freeform",
+	"craft3-freeform-pro",
+	"craft-neo",
+	"navigation",
+	"redactor",
+	"wordsmith",
+	"pdf-transform"
+];
+
+const CRAFT_SCRIPTS_SETUP = [
+    'srclink'      => 'vendor/nystudio107/craft-scripts/scripts',
+    'destlink'     => 'scripts',
+    'srcpath'      => 'scripts/craft3-example.env.sh',
+    'destpath'     => '.env.sh',
+    'replacements' => [
+        'GLOBAL_DB_TABLE_PREFIX=""' => [
+            'substr'  => '""',
+            'env'     => 'DB_TABLE_PREFIX',
+            'default' => '',
+        ],
+        'GLOBAL_DB_DRIVER="mysql"' => [
+            'substr'  => '"mysql"',
+            'env'     => 'DB_DRIVER',
+            'default' => 'mysql',
+        ],
+        'LOCAL_ROOT_PATH="REPLACE_ME"' => [
+            'substr'  => '"REPLACE_ME"',
+            'env'     => '',
+            'default' => '',
+        ],
+        'LOCAL_ASSETS_PATH=${LOCAL_ROOT_PATH}"REPLACE_ME"' => [
+            'substr'  => '"REPLACE_ME"',
+            'env'     => '',
+            'default' => 'web/assets/',
+        ],
+        'LOCAL_DB_NAME="REPLACE_ME"' => [
+            'substr'  => '"REPLACE_ME"',
+            'env'     => 'DB_DATABASE',
+            'default' => 'REPLACE_ME',
+        ],
+        'LOCAL_DB_PASSWORD="REPLACE_ME"' => [
+            'substr'  => '"REPLACE_ME"',
+            'env'     => 'DB_PASSWORD',
+            'default' => 'REPLACE_ME',
+        ],
+        'LOCAL_DB_USER="REPLACE_ME"' => [
+            'substr'  => '"REPLACE_ME"',
+            'env'     => 'DB_USER',
+            'default' => 'REPLACE_ME',
+        ],
+        'LOCAL_DB_HOST="localhost"' => [
+            'substr'  => '"localhost"',
+            'env'     => 'DB_SERVER',
+            'default' => 'localhost',
+        ],
+        'LOCAL_DB_PORT="3306"' => [
+            'substr'  => '"3306"',
+            'env'     => 'DB_PORT',
+            'default' => '3306',
+        ],
+        'LOCAL_DB_SCHEMA="public"' => [
+            'substr'  => '"public"',
+            'env'     => 'DB_SCHEMA',
+            'default' => 'public',
+        ],
+    ],
+];
+
+
+define('CRAFT_BASE_PATH', __DIR__);
+define('CRAFT_VENDOR_PATH', CRAFT_BASE_PATH.'/vendor');
+
+require_once CRAFT_VENDOR_PATH.'/autoload.php';
+
+if(file_Exists(CRAFT_BASE_PATH.'/env')){
+	$dotEnv = new Dotenv\Dotenv(CRAFT_BASE_PATH);
+	$dotEnv->load();
+}
+
+if(empty($argv[1])){
+	craftSetup();
+}else{
+	switch($argv[1]){
+		case 'welcome':
+			craftWelcome();
+			break;
+		default:
+			craftSetup();
+	}
+}
+
+
+
+function craftWelcome(){
+	outputString(PHP_EOL.'To setup Craft install, from your project directory, run:', Console::FG_YELLOW);
+	$script = './craft setup';
+	outputString(PHP_EOL.'    '.$script, Console::FG_GREEN);
+	outputString(PHP_EOL.'Then to setup Craft-Scripts run: ', Console::FG_GREEN);
+	$script='./craft-setup';
+	outputString(PHP_EOL.'    '.$script, Console::FG_GREEN);
+	outputString(PHP_EOL.'Setup is not complete until these commands have been run.', Console::FG_YELLOW);
+}
+function craftSetup(){
+	//Say hello
+	outputString(PHP_EOL.'Welcome to the Craft Setup', Console::FG_YELLOW);
+	//setup craft-scripts
+	setupCraftScripts();
+	// Install all of your plugins
+	installCraftPlugins();
+	// Install Node Packages
+	installNodePackages();
+	// Say adios amigo's
+	outputString(PHP_EOL.'Setup is complete. Adios Amigo!', Console:FG_YELLOW);
+}
+function setupCraftScripts(){
+	outputString(PHP_EOL.'Setting Up Craft-Scripts', Console::FG_YELLOW);
+	if(!file_exists('scripts/.env.sh')){
+		$fileInfo = CRAFT_SCRIPTS_SETUP;
+		createSymLink($fileInfo['srclink'], $fileInfo['destpath']);
+
+		if(!file_exists('.env.sh')) {
+			if(copyFile($fileinfo['srcpath'], fileInfo['destpath'])){
+				$replacements = $fileInfo['replacements'];
+				if(!empty($replacements)){
+					$replacements['LOCAL_ROOT_PATH="REPLACE_ME']['default'] = CRAFT_BASE_PATH.DIRECTORY_SEPARATOR;
+					replaceInFile($fileInfo['dastpath'], $replacements);
+				}
+			}
+		}
+		createSymLink(CRAFT_BASE_PATH.DIRECTORY_SEPARATOR.'.env.sh','scripts/.env.sh');
+	} else {
+		outString('### scripts/.env.sh file already exists, exiting...', Console::FG_RED);
+	}
+}
+
+function installPlugins(){
+	outputString(PHP_EOL.'Installing plugins', Console::FG_YELLOW)
+	$installPluginCmd = './craft install/plugin ';
+	foreach(INSTALL_PLUGINX as $pluginHandle){
+		outputString('- installing plugin '.$pluginHandle);
+		executeShellCommand($installPluginCmd . $pluginHandle);
+	}
+}
+
+function installNodePackages(){
+	$command = '';
+	if(shellCommandExists('npm')){
+		$command = 'npm install';
+	}
+
+	outputString(PHP_EOL.'Installing NodeJS package via '.$command. '(this may take a while)', Console::FG_YELLOW);
+
+	if(!empty($command)){
+		$result = executeShellCommand($command);
+		outputString($result);
+	}else{
+		outputString('### Unable to install NodeJS packages, npm not found', Console::FG_RED);
+	}
+}
+
+/**
+ *  Output a string to the console, using an optional $args to color if supported
+ *  @param String $string
+ *  @return mixed
+*/
+function outputString($string){
+	$stream = \STDOUT;
+	if(Console::streamSupportAnsiColors($stream)){
+		$args = func_get_args();
+		array_shift($args);
+		$string = Console::ansiFormat($string, $args);
+	}
+	return Console::stdout($string.PHP_EOL);
+}
+
+/**
+ *  Cretae a symlink from $srcPath to $destPath
+ *  @param String $srcPath - the source path
+ *  @param string $destPath - the Destination Path
+ *
+ *  @return bool
+*/
+function createSymLink(string $srcPath, string $destPath){
+	$result = @symlink($srcPath, $destPath);
+	if($results) { 
+		outputString('- Created symlink from '.$srcPath.' to '.$destPath);
+	}else{
+		outputString('### error creating symlink from '.$srcPath.' to '.$destPath, Console::FG_RED);
+	}
+	return $result;
+}
+
+/**
+ *  Copy the $srcPath to the $destPAth
+ *  @param String $srcPath - the source path
+ *  @param string $destPath - the Destination Path
+ *
+ *  @return bool
+*/
+function copyFile(string $srcPath, string $destPath){
+	$result = @copy($srcPath, $destPath);
+	if($result){
+		outputString('- copied '.$srcPath.' to '.$destPath);
+	}else{
+		outputString("### error copying ".$srcPath.' to '.$destPath, Console::FG_RED);
+	}
+	return $result;
+}
+/**
+ *  Replace strings in $filePath an write out the modified file
+ *  @param string $filePath
+ *  @param array $replacements
+*/
+function replaceInFile(string $filePath, array $replacements){
+	if(!empty($replacements)){
+		outputSTring(' - setting up '. $filePath);
+		$fileContents = file_get_contents($filePath);
+		foreach($replacements as $findValue => $params){
+			$replaceValue = empty($params['env']) ? $params['default'] :getenv($params['env']) ?? $params['default'];
+			if(!empty($params['substr'])){
+				$subStr = $params['substr'];
+				$wrapChar = '';
+				if($subStr[0] == "'" || $subStr[0] == '"'){
+					$wrapChar = $subStr[0];
+				}
+				$replaceValue = str_replace($subStr, $wrapChar.$replaceValue.$wrapChar, $findValue);
+			}
+			$fileContents = str_replace($findValue, $replaceValue,$fileContents);
+ 		}
+ 		$file_put_contents($filePath, $fileContents);
+	}
+}
+
+/**
+ *  Execute a shell command
+ *  @param String $command - the source path
+ *  @return string
+*/
+function executeShellCommand(string $command): string{
+	// create the shell command
+	$shellCommand = new ShellCommand();
+	$shellCommand -> setCommand($command);
+
+	// if proc_open doesn't work, maybe exec will
+	if(!function_exists('proc_open') && function_exists('exec') ){
+		$shellCommand->useExec = true;
+	}
+	if($shellCommand->execute()){
+		$result = $shellCommand->getOutput();
+	}else{
+		$result = $shellCommand->getError();
+	}
+	return $result;
+}
+
+/**
+ *  Return whehter a shell command exists or not
+ *  @param String $command
+ *  @return bool
+*/
+function shellCommandExists(string $command): bool{
+	$result = executeShellCommand('which '.$command);
+	return !empty($result);
+}
