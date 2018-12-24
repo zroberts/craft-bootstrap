@@ -1,4 +1,5 @@
-# craft-bootstrap
+# Craft Scafolding 
+
 A basic Craft 3 Instalation. Includes Gulp for some basic task running. 
 
 ## Duplicating this Repo (as the owner)
@@ -101,3 +102,8 @@ git merge bootstarp/master --allow-unrelated-histories
 git remote rm bootstrap
 ```
 10. Get building!
+
+
+# Credit
+Base on [NY Studio 107's Craft Scafolding](https://github.com/nystudio107/craft), edited for standard set of plugins I plan on using, along with some basic styling. 
+Big thank you to Andrew Welch at [NY Studio 107](https://nystudio107.com/) for all of the fantastic resources he puts out.
