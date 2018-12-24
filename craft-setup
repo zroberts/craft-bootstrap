@@ -145,7 +145,7 @@ function setupCraftScripts(){
 function installPlugins(){
 	outputString(PHP_EOL.'Installing plugins', Console::FG_YELLOW);
 	$installPluginCmd = './craft install/plugin ';
-	foreach(INSTALL_PLUGINX as $pluginHandle){
+	foreach(INSTALL_PLUGINS as $pluginHandle){
 		outputString('- installing plugin '.$pluginHandle);
 		executeShellCommand($installPluginCmd . $pluginHandle);
 	}
