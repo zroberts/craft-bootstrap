@@ -2,7 +2,7 @@
 <?php 
 
 use yii\helpers\Console;
-use mikeheartl\shellcommand\Command as ShellCommand;
+use mikehaertl\shellcommand\Command as ShellCommand;
 
 const INSTALL_PLUGINS = [
 	"imager",
@@ -115,7 +115,7 @@ function craftSetup(){
 	//setup craft-scripts
 	setupCraftScripts();
 	// Install all of your plugins
-	installCraftPlugins();
+	installPlugins();
 	// Install Node Packages
 	installNodePackages();
 	// Say adios amigo's
@@ -174,7 +174,7 @@ function installNodePackages(){
 */
 function outputString($string){
 	$stream = \STDOUT;
-	if(Console::streamSupportAnsiColors($stream)){
+	if(Console::streamSupportsAnsiColors($stream)){
 		$args = func_get_args();
 		array_shift($args);
 		$string = Console::ansiFormat($string, $args);
@@ -191,7 +191,7 @@ function outputString($string){
 */
 function createSymLink(string $srcPath, string $destPath){
 	$result = @symlink($srcPath, $destPath);
-	if($results) { 
+	if($result) { 
 		outputString('- Created symlink from '.$srcPath.' to '.$destPath);
 	}else{
 		outputString('### error creating symlink from '.$srcPath.' to '.$destPath, Console::FG_RED);
