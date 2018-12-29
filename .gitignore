@@ -21,6 +21,7 @@ web/cpresources/*
 /node_modules/*
 /npm-debug.log
 package-lock.json
+composer.lock
 
 # MISC FILES
 .cache
